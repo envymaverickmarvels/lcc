@@ -75,7 +75,7 @@ export class NotificationService {
       type: data.type,
       title: data.title,
       message: data.message,
-      data: data.notificationData as Record<string, unknown> as undefined,
+      data: data.notificationData as unknown as undefined,
     });
   }
 }

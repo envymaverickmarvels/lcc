@@ -154,9 +154,24 @@ export class PharmacyRepository {
     return prisma.pharmacy.update({ where: { id }, data });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async create(data: any) {
-    return prisma.pharmacy.create({ data });
+  async create(data: {
+    name: string;
+    address: string;
+    phone?: string;
+    email?: string;
+    location: unknown;
+    openingTime?: string;
+    closingTime?: string;
+    is24h?: boolean;
+    isDelivery?: boolean;
+    deliveryRadiusKm?: number;
+    ownerId?: string;
+  }) {
+    return prisma.$executeRaw`
+      INSERT INTO pharmacies (id, name, address, phone, email, location, opening_time, closing_time, is_24h, is_delivery, delivery_radius_km, owner_id, created_at, updated_at)
+      VALUES (${crypto.randomUUID()}, ${data.name}, ${data.address}, ${data.phone}, ${data.email}, ST_SetSRID(ST_MakePoint(0, 0), 4326), ${data.openingTime || '08:00'}, ${data.closingTime || '22:00'}, ${data.is24h || false}, ${data.isDelivery || false}, ${data.deliveryRadiusKm}, ${data.ownerId}, NOW(), NOW())
+      RETURNING id, name, address, phone, email, opening_time, closing_time, is_24h, is_delivery, delivery_radius_km, rating, total_reviews, is_active, created_at, updated_at
+    `;
   }
 
   async getMedicines(
