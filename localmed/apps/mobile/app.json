@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "LocalMed Mobile",
+    "slug": "localmed-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "localmed",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#2563eb"
+    },
+    "ios": {
+      "bundleIdentifier": "com.localmed.mobile"
+    },
+    "android": {
+      "package": "com.localmed.mobile"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    }
+  }
+}

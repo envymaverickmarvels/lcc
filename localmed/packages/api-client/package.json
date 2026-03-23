@@ -1,0 +1,21 @@
+{
+  "name": "@localmed/api-client",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@localmed/core": "*",
+    "axios": "^1.13.6"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.75.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

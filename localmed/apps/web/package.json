@@ -1,0 +1,28 @@
+{
+  "name": "@localmed/web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "^16.2.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "@localmed/ui": "*",
+    "@localmed/core": "*",
+    "@localmed/api-client": "*",
+    "@tanstack/react-query": "^5.95.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^5.9.3",
+    "eslint": "^10.1.0",
+    "eslint-config-next": "^16.2.1"
+  }
+}
