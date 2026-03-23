@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Sidebar from "./sidebar";
-import "./globals.css";
+import "../styles/globals.css";
 
 export const metadata: Metadata = {
   title: "Pharmacy Dashboard - LocalMed",
