@@ -10,7 +10,7 @@ export class UserRepository {
     return prisma.user.findUnique({ where: { phone } });
   }
 
-  async create(data: { phone: string; name?: string; email?: string }) {
+  async create(data: { phone: string; name?: string; email?: string; isVerified?: boolean }) {
     return prisma.user.create({ data });
   }
 
@@ -154,8 +154,9 @@ export class PharmacyRepository {
     return prisma.pharmacy.update({ where: { id }, data });
   }
 
-  async create(data: Partial<Prisma.PharmacyCreateInput>) {
-    return prisma.pharmacy.create({ data: data as Prisma.PharmacyCreateInput });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async create(data: any) {
+    return prisma.pharmacy.create({ data });
   }
 
   async getMedicines(
@@ -173,8 +174,8 @@ export class PharmacyRepository {
         ...(options?.search && {
           medicine: {
             OR: [
-              { name: { ilike: `%${options.search}%` } },
-              { genericName: { ilike: `%${options.search}%` } },
+              { name: { contains: options.search, mode: 'insensitive' } },
+              { genericName: { contains: options.search, mode: 'insensitive' } },
             ],
           },
         }),
@@ -212,8 +213,8 @@ export class MedicineRepository {
     return prisma.medicine.findFirst({
       where: {
         OR: [
-          { name: { ilike: `%${name}%` } },
-          { genericName: { ilike: `%${name}%` } },
+          { name: { contains: name, mode: 'insensitive' } },
+          { genericName: { contains: name, mode: 'insensitive' } },
         ],
       },
     });
@@ -225,9 +226,9 @@ export class MedicineRepository {
     return prisma.medicine.findMany({
       where: {
         OR: [
-          { name: { ilike: `%${query}%` } },
-          { genericName: { ilike: `%${query}%` } },
-          { manufacturer: { ilike: `%${query}%` } },
+          { name: { contains: query, mode: 'insensitive' } },
+          { genericName: { contains: query, mode: 'insensitive' } },
+          { manufacturer: { contains: query, mode: 'insensitive' } },
         ],
         ...(options?.category && { category: options.category }),
       },
@@ -239,8 +240,8 @@ export class MedicineRepository {
     return prisma.medicine.findMany({
       where: {
         OR: [
-          { name: { ilike: `${query}%` } },
-          { genericName: { ilike: `${query}%` } },
+          { name: { startsWith: query, mode: 'insensitive' } },
+          { genericName: { startsWith: query, mode: 'insensitive' } },
         ],
       },
       select: { name: true, genericName: true, manufacturer: true, category: true },
@@ -600,7 +601,7 @@ export class NotificationRepository {
     return prisma.notification.count({ where: { userId, isRead: false } });
   }
 
-  async create(data: { userId: string; type: string; title: string; message: string; data?: unknown }) {
+  async create(data: { userId: string; type: string; title: string; message: string; data?: Prisma.InputJsonValue }) {
     return prisma.notification.create({ data });
   }
 

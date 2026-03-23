@@ -71,8 +71,8 @@ export class OrderService {
 
     const order = await orderRepository.create({
       orderNumber,
-      userId,
-      pharmacyId: input.pharmacyId,
+      user: { connect: { id: userId } },
+      pharmacy: { connect: { id: input.pharmacyId } },
       type: input.type,
       status: 'confirmed',
       deliveryAddress: input.deliveryAddress ? JSON.stringify(input.deliveryAddress) : undefined,
@@ -423,8 +423,8 @@ export class InventoryService {
     }
 
     return stockRepository.create({
-      pharmacyId: pharmacy.id,
-      medicineId: data.medicineId,
+      pharmacy: { connect: { id: pharmacy.id } },
+      medicine: { connect: { id: data.medicineId } },
       stockQuantity: data.stockQuantity,
       sellingPrice: data.sellingPrice,
       mrp: data.mrp,

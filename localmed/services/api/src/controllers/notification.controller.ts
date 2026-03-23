@@ -5,6 +5,8 @@ import type { AuthRequest } from '../middleware/auth.js';
 import { z } from 'zod';
 import prisma from '../config/database.js';
 
+const getParam = (param: string | string[] | undefined): string => param as string;
+
 export class NotificationController {
   async getNotifications(req: AuthRequest, res: Response, next: NextFunction) {
     try {
@@ -23,7 +25,7 @@ export class NotificationController {
 
   async markAsRead(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       const notification = await notificationService.markAsRead(id, req.user!.id);
 
       res.json({ success: true, data: notification });

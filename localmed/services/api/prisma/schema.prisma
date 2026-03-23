@@ -33,6 +33,7 @@ model User {
   notifications Notification[]
   pharmacies    Pharmacy[]   @relation("PharmacyOwner")
   devices       UserDevice[]
+  reviews       PharmacyReview[]
 
   @@map("users")
 }
@@ -130,6 +131,7 @@ model PharmacyReview {
   pharmacyId  String   @map("pharmacy_id")
   pharmacy    Pharmacy @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
   userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   rating      Decimal  @db.Decimal(2,1)
   comment     String?
   isVerified  Boolean  @default(false) @map("is_verified")

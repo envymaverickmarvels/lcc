@@ -11,7 +11,7 @@ function generateOTP(): string {
 
 function generateTokens(userId: string, phone: string): AuthTokens {
   const token = jwt.sign({ id: userId, phone }, config.jwt.secret, {
-    expiresIn: config.jwt.expiresIn,
+    expiresIn: config.jwt.expiresIn as jwt.SignOptions['expiresIn'],
   });
 
   const refreshToken = jwt.sign({ id: userId, phone, type: 'refresh' }, config.jwt.secret, {

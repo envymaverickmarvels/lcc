@@ -1,7 +1,13 @@
 import type { Request, Response, NextFunction } from 'express';
+import type { ParsedQs } from 'qs';
 import { medicineService, pharmacyService } from '../services/index.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { z } from 'zod';
+
+const getParam = (param: string | string[] | ParsedQs | (string | ParsedQs)[] | undefined): string => {
+  if (Array.isArray(param)) return param[0] as string;
+  return param as string;
+};
 
 export class MedicineController {
   async search(req: Request, res: Response, next: NextFunction) {
@@ -70,7 +76,7 @@ export class MedicineController {
 
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       const medicine = await medicineService.getById(id);
 
       if (!medicine) {
@@ -119,7 +125,7 @@ export class PharmacyController {
 
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       const pharmacy = await pharmacyService.getById(id);
 
       if (!pharmacy) {
@@ -137,7 +143,7 @@ export class PharmacyController {
 
   async getMedicines(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       const { search, category, page = '1', limit = '20' } = req.query;
 
       const result = await pharmacyService.getMedicines(id, {
@@ -158,14 +164,14 @@ export class PharmacyController {
 
   async getStock(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
-      const { medicineId } = req.query;
+      const id = getParam(req.params.id);
+      const medicineId = getParam(req.query.medicineId);
 
       if (!medicineId) {
         throw new AppError(400, 'medicineId is required', 'VALIDATION_ERROR');
       }
 
-      const stock = await pharmacyService.getStock(id, medicineId as string);
+      const stock = await pharmacyService.getStock(id, medicineId);
 
       if (!stock) {
         throw new AppError(404, 'Stock not found', 'NOT_FOUND');

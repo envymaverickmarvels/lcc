@@ -10,6 +10,7 @@ export class NotificationService {
     const [notifications, total, unreadCount] = await Promise.all([
       notificationRepository.findByUser(userId, { limit, offset }),
       notificationRepository.countUnread(userId),
+      notificationRepository.countUnread(userId),
     ]);
 
     return {
@@ -74,7 +75,7 @@ export class NotificationService {
       type: data.type,
       title: data.title,
       message: data.message,
-      data: data.notificationData,
+      data: data.notificationData as Record<string, unknown> as undefined,
     });
   }
 }

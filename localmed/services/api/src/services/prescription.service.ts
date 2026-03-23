@@ -42,7 +42,7 @@ export class PrescriptionService {
         const existingMedicine = await medicineRepository.findByName(med.name);
 
         await prescriptionRepository.addMedicine(prescriptionId, {
-          medicineId: existingMedicine?.id,
+          medicine: existingMedicine?.id ? { connect: { id: existingMedicine.id } } : undefined,
           name: med.name,
           dosage: med.dosage,
           frequency: med.frequency,
@@ -166,7 +166,7 @@ export class PrescriptionService {
     }
 
     return prescriptionRepository.updateMedicine(medicineId, {
-      medicineId: matchedMedicineId,
+      medicine: matchedMedicineId ? { connect: { id: matchedMedicineId } } : undefined,
       isVerified: true,
     });
   }

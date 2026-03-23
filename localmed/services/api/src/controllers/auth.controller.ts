@@ -4,6 +4,8 @@ import { AppError } from '../middleware/errorHandler.js';
 import type { AuthRequest } from '../middleware/auth.js';
 import { z } from 'zod';
 
+const getParam = (param: string | string[] | undefined): string => param as string;
+
 export class AuthController {
   async register(req: Request, res: Response, next: NextFunction) {
     try {
@@ -80,7 +82,7 @@ export class UserController {
       const schema = z.object({
         name: z.string().min(1).max(255).optional(),
         email: z.string().email().optional(),
-        dateOfBirth: z.string().optional(),
+        dateOfBirth: z.coerce.date().optional(),
         gender: z.enum(['male', 'female', 'other', 'prefer_not_to_say']).optional(),
         bloodType: z.string().optional(),
         allergies: z.array(z.string()).optional(),
@@ -133,7 +135,7 @@ export class UserController {
 
   async updateAddress(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       const schema = z.object({
         label: z.string().optional(),
         fullName: z.string().optional(),
@@ -150,7 +152,7 @@ export class UserController {
 
   async deleteAddress(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       await userService.deleteAddress(id, req.user!.id);
 
       res.json({ success: true, message: 'Address deleted' });
@@ -161,7 +163,7 @@ export class UserController {
 
   async setDefaultAddress(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       const address = await userService.setDefaultAddress(id, req.user!.id);
 
       res.json({ success: true, data: address });

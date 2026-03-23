@@ -1,4 +1,4 @@
-import { Router, Response, NextFunction } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import prisma from '../config/database.js';
 import { authenticate, AuthRequest } from '../middleware/auth.js';
@@ -6,9 +6,11 @@ import { AppError } from '../middleware/errorHandler.js';
 
 const router = Router();
 
+const getParam = (param: string | string[] | undefined): string => param as string;
+
 router.get('/pharmacy/:pharmacyId', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { pharmacyId } = req.params;
+    const pharmacyId = getParam(req.params.pharmacyId);
     const { page = '1', limit = '20' } = req.query;
     const pageNum = parseInt(page as string, 10);
     const limitNum = parseInt(limit as string, 10);
@@ -51,7 +53,7 @@ router.get('/pharmacy/:pharmacyId', async (req: Request, res: Response, next: Ne
 
 router.post('/pharmacy/:pharmacyId', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { pharmacyId } = req.params;
+    const pharmacyId = getParam(req.params.pharmacyId);
     const schema = z.object({
       rating: z.number().min(1).max(5),
       comment: z.string().max(500).optional(),
@@ -112,7 +114,7 @@ router.post('/pharmacy/:pharmacyId', authenticate, async (req: AuthRequest, res:
 
 router.put('/:id', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = getParam(req.params.id);
     const schema = z.object({
       rating: z.number().min(1).max(5).optional(),
       comment: z.string().max(500).optional(),
@@ -151,7 +153,7 @@ router.put('/:id', authenticate, async (req: AuthRequest, res: Response, next: N
 
 router.delete('/:id', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = getParam(req.params.id);
 
     const review = await prisma.pharmacyReview.findUnique({ where: { id } });
 

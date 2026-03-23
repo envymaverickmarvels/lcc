@@ -9,6 +9,8 @@ import type { AuthRequest } from '../middleware/auth.js';
 import { z } from 'zod';
 import { AppError } from '../middleware/errorHandler.js';
 
+const getParam = (param: string | string[] | undefined): string => param as string;
+
 export class OrderController {
   async create(req: AuthRequest, res: Response, next: NextFunction) {
     try {
@@ -60,7 +62,7 @@ export class OrderController {
 
   async getById(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       const order = await orderService.getById(id, req.user!.id);
 
       res.json({ success: true, data: order });
@@ -87,7 +89,7 @@ export class OrderController {
 
   async cancel(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       const schema = z.object({
         reason: z.enum(['found_elsewhere', 'no_longer_needed', 'wrong_items', 'other']).default('other'),
       });
@@ -110,7 +112,7 @@ export class OrderController {
 
   async reorder(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       const result = await orderService.reorder(id, req.user!.id);
 
       res.json({ success: true, data: result });
@@ -165,7 +167,7 @@ export class PharmacyOrderController {
 
   async updateStatus(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       const schema = z.object({
         status: z.enum(['confirmed', 'preparing', 'ready', 'completed', 'cancelled']),
       });
@@ -223,7 +225,7 @@ export class InventoryController {
 
   async updateStock(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       const schema = z.object({
         stockQuantity: z.number().int().min(0).optional(),
         sellingPrice: z.number().positive().optional(),
@@ -242,7 +244,7 @@ export class InventoryController {
 
   async deleteStock(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       await inventoryService.deleteStock(req.user!.id, id);
 
       res.json({ success: true, message: 'Stock item deleted' });

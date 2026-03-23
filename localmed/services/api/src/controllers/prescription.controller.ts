@@ -3,6 +3,8 @@ import { prescriptionService } from '../services/index.js';
 import type { AuthRequest } from '../middleware/auth.js';
 import { z } from 'zod';
 
+const getParam = (param: string | string[] | undefined): string => param as string;
+
 export class PrescriptionController {
   async upload(req: AuthRequest, res: Response, next: NextFunction) {
     try {
@@ -28,7 +30,7 @@ export class PrescriptionController {
 
   async getById(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       const prescription = await prescriptionService.getById(id, req.user!.id);
 
       res.json({ success: true, data: prescription });
@@ -39,7 +41,7 @@ export class PrescriptionController {
 
   async getMedicines(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       const medicines = await prescriptionService.getMedicines(id, req.user!.id);
 
       res.json({ success: true, data: medicines });
@@ -50,7 +52,7 @@ export class PrescriptionController {
 
   async verifyMedicine(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req.params.id);
       const schema = z.object({
         medicineId: z.string().uuid(),
         matchedMedicineId: z.string().uuid().optional(),
