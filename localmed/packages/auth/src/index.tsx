@@ -1,9 +1,16 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { authApi, AuthResponse } from '@localmed/api-client';
-import { User } from '@localmed/core';
+import { authApi } from '@localmed/api-client';
+
+interface AuthUser {
+  id: string;
+  phone: string;
+  name?: string;
+  email?: string;
+  [key: string]: unknown;
+}
 
 interface AuthContextType {
-  user: User | null;
+  user: AuthUser | null;
   token: string | null;
   isLoading: boolean;
   login: (phone: string) => Promise<void>;
@@ -14,7 +21,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
